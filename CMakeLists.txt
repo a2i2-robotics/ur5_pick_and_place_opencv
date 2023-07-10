@@ -3,7 +3,6 @@ project(ur5_pick_and_place_opencv)
 
 find_package(catkin REQUIRED
   COMPONENTS
-    opencv_services
     interactive_markers
     moveit_core
     moveit_ros_planning
@@ -38,7 +37,6 @@ catkin_package(
     tf2_geometry_msgs
     actionlib_msgs
     control_msgs
-    opencv_services
 )
 
 include_directories(SYSTEM ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIRS})
