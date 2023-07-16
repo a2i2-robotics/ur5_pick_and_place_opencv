@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include "ros/ros.h"
+#include <ros/console.h>
 #include "ur5_realsense_perception_msgs/Filters.h"
 #include "ur5_realsense_perception_msgs/Detection.h"
 #include "ur5_realsense_perception_msgs/DetectedObjects.h"
@@ -33,6 +34,10 @@ int main(int argc, char** argv)
     // setup using just the name of the planning group you would like to control and plan for.
     moveit::planning_interface::MoveGroupInterface move_group_interface_arm(PLANNING_GROUP_ARM);
     moveit::planning_interface::MoveGroupInterface move_group_interface_gripper(PLANNING_GROUP_GRIPPER);
+    
+    move_group_interface_arm.setPlanningTime(60);
+    move_group_interface_gripper.setPlanningTime(60);
+    ROS_INFO("get max plan time %f", move_group_interface_arm.getPlanningTime());
 
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
 
@@ -46,7 +51,7 @@ int main(int argc, char** argv)
     
     bool success = (move_group_interface_arm.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
 
-    ROS_INFO_NAMED("tutorial", "Visualizing plan 1 (pose goal) %s", success ? "" : "FAILED");
+    ROS_INFO_NAMED("tutorial", "Visualizing plan 1 (pose goal) %s", success ? "SUCCESS" : "FAILED");
 
     move_group_interface_arm.move();
 
@@ -83,13 +88,13 @@ int main(int argc, char** argv)
     target_pose1.orientation = current_pose.pose.orientation;
     target_pose1.position.x = srv.response.objects[0].position.x;
     target_pose1.position.y = srv.response.objects[0].position.y;
-    target_pose1.position.z = srv.response.objects[0].position.z;
+    target_pose1.position.z = srv.response.objects[0].position.z + 0.3;
     move_group_interface_arm.setPoseTarget(target_pose1);
 
     success = (move_group_interface_arm.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
 
     ROS_INFO_NAMED("tutorial", "Goal position x:%f y:%f z:%f", target_pose1.position.x, target_pose1.position.y, target_pose1.position.z);
-    ROS_INFO_NAMED("tutorial", "Visualizing plan 1 (pose goal) %s", success ? "" : "FAILED");
+    ROS_INFO_NAMED("tutorial", "Visualizing plan 2 (pose goal) %s", success ? "SUCCESS" : "FAILED");
 
     move_group_interface_arm.move();
 
