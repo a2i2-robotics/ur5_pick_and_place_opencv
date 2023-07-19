@@ -13,14 +13,7 @@
 #include <moveit_msgs/AttachedCollisionObject.h>
 #include <moveit_msgs/CollisionObject.h>
 
-std::string read_filter()
-{
-	std::string filter;
-	std::cout << "Enter your filter \n";
-	std::cin >> filter;
-	std::cout << "Setting the filter to: " << filter;
-	return filter;
-}
+#include "misc.h"
 
 int main(int argc, char** argv)
 {
