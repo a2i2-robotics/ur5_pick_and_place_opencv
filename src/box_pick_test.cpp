@@ -13,6 +13,15 @@
 #include <moveit_msgs/AttachedCollisionObject.h>
 #include <moveit_msgs/CollisionObject.h>
 
+std::string read_filter()
+{
+	std::string filter;
+	std::cout << "Enter your filter \n";
+	std::cin >> filter;
+	std::cout << "Setting the filter to: " << filter;
+	return filter;
+}
+
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "pick_and_place_node");
@@ -27,16 +36,16 @@ int main(int argc, char** argv)
   // MoveIt operates on sets of joints called "planning groups" and stores them in an object called
   // the `JointModelGroup`. Throughout MoveIt the terms "planning group" and "joint model group"
   // are used interchangably.
-    static const std::string PLANNING_GROUP_ARM = "ur5_arm";
-    static const std::string PLANNING_GROUP_GRIPPER = "gripper";
+    static const std::string PLANNING_GROUP_ARM = "manipulator"; //"ur5_arm";
+    //static const std::string PLANNING_GROUP_GRIPPER = "gripper";
 
     // The :planning_interface:`MoveGroupInterface` class can be easily
     // setup using just the name of the planning group you would like to control and plan for.
     moveit::planning_interface::MoveGroupInterface move_group_interface_arm(PLANNING_GROUP_ARM);
-    moveit::planning_interface::MoveGroupInterface move_group_interface_gripper(PLANNING_GROUP_GRIPPER);
+    //moveit::planning_interface::MoveGroupInterface move_group_interface_gripper(PLANNING_GROUP_GRIPPER);
     
     move_group_interface_arm.setPlanningTime(60);
-    move_group_interface_gripper.setPlanningTime(60);
+    //move_group_interface_gripper.setPlanningTime(60);
     ROS_INFO("get max plan time %f", move_group_interface_arm.getPlanningTime());
 
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
@@ -54,13 +63,15 @@ int main(int argc, char** argv)
     ROS_INFO_NAMED("tutorial", "Visualizing plan 1 (pose goal) %s", success ? "SUCCESS" : "FAILED");
 
     move_group_interface_arm.move();
+    std::string filter = read_filter();
 
     // 2. Get object position 
     // 2.1 Register for "box" filter
     ros::ServiceClient filter_srv_client = n.serviceClient<ur5_realsense_perception_msgs::Filters>("filter_registration");
     ur5_realsense_perception_msgs::Filters srv2;
-    std::vector<std::string> filters{"box"};
+    std::vector<std::string> filters{filter};
     srv2.request.filters = filters;
+    srv2.request.clear = true;
     if(filter_srv_client.call(srv2)) {
 	ROS_INFO_STREAM("Filters registered: " << srv2.response.filters[0]);
     } else {
@@ -81,7 +92,8 @@ int main(int argc, char** argv)
     // 3. Move robot arm
     ROS_INFO_NAMED("tutorial", "// 2. Place the TCP (Tool Center Point, the tip of the robot) above the blue box");
     geometry_msgs::PoseStamped current_pose;
-    current_pose = move_group_interface_arm.getCurrentPose("ee_link");
+    //current_pose = move_group_interface_arm.getCurrentPose("ee_link");
+    current_pose = move_group_interface_arm.getCurrentPose("wrist_3_link");
 
     geometry_msgs::Pose target_pose1;
   
