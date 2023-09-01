@@ -30,7 +30,7 @@ generate_messages(
 
 catkin_package(
   LIBRARIES
-  INCLUDE_DIRS
+  INCLUDE_DIRS include
   CATKIN_DEPENDS
     roscpp
     moveit_core
@@ -44,14 +44,17 @@ catkin_package(
 )
 
 include_directories(SYSTEM ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIRS})
+include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIRS})
 
 #add_executable(pick_and_place_opencv src/pick_and_place_opencv.cpp)
 #target_link_libraries(pick_and_place_opencv ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 #add_dependencies(pick_and_place_opencv ur5_pick_and_place_opencv_gencpp)
 
-add_executable(box_pick_test src/box_pick_test.cpp)
+add_executable(box_pick_test src/box_pick_test.cpp lib/misc.cpp)
 add_dependencies(box_pick_test ur5_pick_and_place_opencv_generate_messages_cpp)
 target_link_libraries(box_pick_test ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+
+install(TARGETS box_pick_test DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 #install(TARGETS pick_and_place_opencv DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
