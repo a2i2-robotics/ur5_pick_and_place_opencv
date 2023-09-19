@@ -54,6 +54,10 @@ add_executable(box_pick_test src/box_pick_test.cpp lib/misc.cpp)
 add_dependencies(box_pick_test ur5_pick_and_place_opencv_generate_messages_cpp)
 target_link_libraries(box_pick_test ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
+add_executable(box_pick src/box_pick.cpp lib/misc.cpp)
+add_dependencies(box_pick ur5_pick_and_place_opencv_generate_messages_cpp)
+target_link_libraries(box_pick ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+
 install(TARGETS box_pick_test DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 #install(TARGETS pick_and_place_opencv DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
